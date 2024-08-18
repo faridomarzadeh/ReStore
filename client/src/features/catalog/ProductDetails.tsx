@@ -1,4 +1,4 @@
-import { Divider, Grid, Table, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Product } from "../../app/models/Product";
@@ -32,6 +32,7 @@ export default function ProductDetails() {
                 <Typography variant="h4" sx={{color: 'secondary'}}>{product.price}</Typography>
                 <TableContainer>
                     <Table>
+                        <TableBody>
                         <TableRow>
                             <TableCell>Name</TableCell>
                             <TableCell>{product.name}</TableCell>
@@ -56,6 +57,7 @@ export default function ProductDetails() {
                             <TableCell>Quantity In Stock</TableCell>
                             <TableCell>{product.quantityInStock}</TableCell>
                         </TableRow>
+                        </TableBody>
                     </Table>
                 </TableContainer>
             </Grid>
