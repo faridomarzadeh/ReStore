@@ -1,7 +1,6 @@
 import { Alert, AlertTitle, Box, Button, ButtonGroup, Container, List, ListItem, ListItemText, Typography } from "@mui/material";
 import { agent } from "../../app/api/agent";
 import { useState } from "react";
-import { NotFound } from "../../app/errors/NotFound";
 import { Navigate } from "react-router-dom";
 
 export default function AboutPage() {
