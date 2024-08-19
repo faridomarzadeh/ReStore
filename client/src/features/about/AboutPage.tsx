@@ -1,7 +1,15 @@
-import { Box, Button, ButtonGroup, Container, Typography } from "@mui/material";
+import { Alert, AlertTitle, Box, Button, ButtonGroup, Container, List, ListItem, ListItemText, Typography } from "@mui/material";
 import { agent } from "../../app/api/agent";
+import { useState } from "react";
 
 export default function AboutPage() {
+
+  const [validationErrors, setValidationErrors] = useState<string[]>([])
+
+  function getValidationError() {
+    agent.TestErrors.getValidationError().
+    catch(errors => setValidationErrors(errors))
+    }
   return (
     <Container>
         <Box sx={{display:'flex', justifyContent:'center', flexDirection:'column', alignItems:'center'}}>
@@ -34,9 +42,7 @@ export default function AboutPage() {
         </Button>
         <Button
           variant="contained"
-          onClick={() => agent.TestErrors.getValidationError().catch(error => console.log(error))
-
-          }
+          onClick={getValidationError}
         >
           Validation Error
         </Button>
@@ -50,6 +56,20 @@ export default function AboutPage() {
         </Button>
       </ButtonGroup>
       </Box>
+      { validationErrors.length >0 &&
+      <Alert severity="error">
+        <AlertTitle>Validation Errors</AlertTitle>
+        <List>
+          {validationErrors.map((error) => (
+            <ListItem key={error}>
+              <ListItemText>
+                {error}
+              </ListItemText>
+            </ListItem>
+          ))}
+        </List>
+      </Alert>
+}
     </Container>
   );
 }
