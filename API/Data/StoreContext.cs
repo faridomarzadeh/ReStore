@@ -11,5 +11,6 @@ namespace API.Data
             
         }
         public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<Basket> Baskets{ get; set; }
     }
 }
