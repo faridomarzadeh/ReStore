@@ -13,14 +13,14 @@ namespace API.Entities
 
         public void AddItem(Product product, int quantity)
         {
-            if(!Items.All(item => item.ProductId != product.Id))
+            if(!Items.Any(item => item.ProductId == product.Id))
             {
                 Items.Add(new BasketItem(){
                     Product = product,
                     Quantity = quantity
                 });
             }
-            var existingItem = Items.FirstOrDefault(item => item.Product.Id == product.Id);
+            var existingItem = Items.FirstOrDefault(item => item.ProductId == product.Id);
             if(existingItem !=null){
                 existingItem.Quantity += quantity;
             }
@@ -28,7 +28,7 @@ namespace API.Entities
 
         public void RemoveItem(int productId, int quantity)
         {
-            var item = Items.FirstOrDefault(item => item.Product.Id == productId);
+            var item = Items.FirstOrDefault(item => item.ProductId == productId);
             if(item != null)
             {
                 item.Quantity -= quantity;
