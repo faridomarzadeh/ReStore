@@ -19,7 +19,7 @@ namespace API.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet(Name = "GetBasket")]
         public async Task<ActionResult<BasketDto>> GetBasket()
         {
             var basket = await GetBasketAsync();
@@ -27,25 +27,7 @@ namespace API.Controllers
             if (basket == null)
                 return NotFound();
 
-            return new BasketDto()
-            {
-                Id = basket.Id,
-                BuyerId = basket.BuyerId,
-                Items = basket.Items.Select(item =>
-                {
-                    return new BasketItemDto()
-                    {
-                        ProductId = item.ProductId,
-                        Name = item.Product.Name,
-                        Brand = item.Product.Brand,
-                        Description = item.Product.Description,
-                        PictureUrl = item.Product.PictureUrl,
-                        Price = item.Product.Price,
-                        Type = item.Product.Type,
-                        Quantity = item.Quantity,
-                    };
-                }).ToList()
-            };
+            return MapBasketToDto(basket);
         }
 
         [HttpPost]
@@ -66,7 +48,7 @@ namespace API.Controllers
             var result = await _storeContext.SaveChangesAsync() > 0;
 
             if (result)
-                return StatusCode(201);
+                return CreatedAtRoute("GetBasket", MapBasketToDto(basket));
 
             return BadRequest(new ProblemDetails { Title = "Problem occured adding item to basket" });
         }
@@ -80,7 +62,7 @@ namespace API.Controllers
             if (result)
                 return Ok();
 
-            return BadRequest(new ProblemDetails() {Title="Problem removing item from the basket"});
+            return BadRequest(new ProblemDetails() { Title = "Problem removing item from the basket" });
         }
 
 
@@ -115,6 +97,29 @@ namespace API.Controllers
             };
             _storeContext.Baskets.Add(basket);
             return basket;
+        }
+
+        private BasketDto MapBasketToDto(Basket basket)
+        {
+            return new BasketDto()
+            {
+                Id = basket.Id,
+                BuyerId = basket.BuyerId,
+                Items = basket.Items.Select(item =>
+                {
+                    return new BasketItemDto()
+                    {
+                        ProductId = item.ProductId,
+                        Name = item.Product.Name,
+                        Brand = item.Product.Brand,
+                        Description = item.Product.Description,
+                        PictureUrl = item.Product.PictureUrl,
+                        Price = item.Product.Price,
+                        Type = item.Product.Type,
+                        Quantity = item.Quantity,
+                    };
+                }).ToList()
+            };
         }
     }
 }
