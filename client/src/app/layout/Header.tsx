@@ -10,7 +10,8 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import { router } from "../router/Routes";
 interface Props {
   darkMode: boolean;
   toggleMode: () => void;
@@ -40,6 +41,7 @@ const navStyles = {
   },
 };
 export default function Header({ darkMode, toggleMode }: Props) {
+
   return (
     <AppBar position="static" sx={{ mb: 4 }}>
       <Toolbar
@@ -75,9 +77,11 @@ export default function Header({ darkMode, toggleMode }: Props) {
             edge="start"
             color="inherit"
             sx={{ mr: 2, display: "inline-block" }}
+            component={Link}
+            to={'/basket'}
           >
             <Badge badgeContent="4" color="secondary">
-              <ShoppingCart />
+              <ShoppingCart/>
             </Badge>
           </IconButton>
           <List sx={{ display: "flex" }}>
