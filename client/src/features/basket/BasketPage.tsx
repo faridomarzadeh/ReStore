@@ -1,37 +1,49 @@
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
+import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import { Add, Delete, Remove } from "@mui/icons-material";
 import { useStoreContext } from "../../app/context/StoreContext";
 import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
 import { agent } from "../../app/api/agent";
+import BasketSummary from "./BasketSummary";
 
 export const BasketPage = () =>{
-  const[loading, setLoading] = useState(false);
+  const[status,setStatus] = useState({
+    loading: false,
+    name: ''
+  })
   const{basket, setBasket, removeItem} = useStoreContext();
 
-  function handleAddItem(productId: number)
+  function handleAddItem(productId: number, name: string)
   {
-    setLoading(true);
+    setStatus({
+      loading: true,
+      name
+    })
     agent.Basket.addItem(productId)
     .then(basket => setBasket(basket))
     .catch(error => console.log(error))
-    .finally(()=>setLoading(false))
+    .finally(()=>setStatus({loading: false, name: ''}))
   }
 
-  function handleRemoveItem(productId: number, quantity=1)
+  function handleRemoveItem(productId: number, quantity=1, name: string)
   {
-    setLoading(true);
+    setStatus({
+      loading: true,
+      name
+    });
+
     agent.Basket.removeItem(productId, quantity)
     .then(()=>removeItem(productId,quantity))
     .catch(error => console.log(error))
-    .finally(()=>setLoading(false))
+    .finally(()=>setStatus({loading: false, name: ''}))
   }
 
     if(basket == null)
         return <Typography variant="h3">Your basket is empty</Typography>
 
     return (
-        <TableContainer component={Paper}>
+      <>
+      <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -56,17 +68,26 @@ export const BasketPage = () =>{
                 </TableCell>
                 <TableCell align="right">${(item.price/100).toFixed(2)}</TableCell>
                 <TableCell align="center">
-                  <LoadingButton color="error" loading={loading} onClick={()=>handleRemoveItem(item.productId)}>
+                  <LoadingButton color="error"
+                   loading={status.loading && status.name === 'rem' + item.productId} 
+                   onClick={()=>handleRemoveItem(item.productId,1,'rem' + item.productId)}
+                   >
                     <Remove/>
                   </LoadingButton>
                   {item.quantity}
-                  <LoadingButton color="secondary" loading={loading} onClick={()=>handleAddItem(item.productId)}>
+                  <LoadingButton color="secondary"
+                    loading={status.loading && status.name === 'add' + item.productId} 
+                    onClick={()=>handleAddItem(item.productId,'add' + item.productId)}
+                    >
                     <Add/>
                   </LoadingButton>
                   </TableCell>
                 <TableCell align="right">${((item.price/100) * item.quantity).toFixed(2)}</TableCell>
                 <TableCell align="right">
-                    <LoadingButton loading={loading} onClick={()=>handleRemoveItem(item.productId,item.quantity)}>
+                    <LoadingButton
+                      loading={status.loading && status.name === 'del' + item.productId} 
+                      onClick={()=>handleRemoveItem(item.productId, item.quantity, 'del' + item.productId)}
+                     >
                         <Delete/>
                     </LoadingButton>
                 </TableCell>
@@ -75,5 +96,12 @@ export const BasketPage = () =>{
           </TableBody>
         </Table>
       </TableContainer>
+      <Grid container>
+        <Grid xs={6} item></Grid>
+        <Grid xs={6} item>
+          <BasketSummary/>
+        </Grid>
+      </Grid>
+      </>
     )
 }
