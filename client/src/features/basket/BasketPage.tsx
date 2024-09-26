@@ -1,10 +1,11 @@
-import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
+import { Box, Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import { Add, Delete, Remove } from "@mui/icons-material";
 import { useStoreContext } from "../../app/context/StoreContext";
 import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
 import { agent } from "../../app/api/agent";
 import BasketSummary from "./BasketSummary";
+import { Link } from "react-router-dom";
 
 export const BasketPage = () =>{
   const[status,setStatus] = useState({
@@ -100,6 +101,15 @@ export const BasketPage = () =>{
         <Grid xs={6} item></Grid>
         <Grid xs={6} item>
           <BasketSummary/>
+          <Button
+           component={Link}
+            to="/checkout"
+            variant="contained"
+            size="large"
+            fullWidth
+            >
+            Checkout
+          </Button>
         </Grid>
       </Grid>
       </>
